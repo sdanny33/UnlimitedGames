@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Answer the question</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="card">
+    <p class="eyebrow">Game <span id="game-code"></span></p>
+    <h1 id="question">Loading question…</h1>
+    <form id="answer-form">
+      <label for="answer">Your answer</label>
+      <input id="answer" maxlength="160" autocomplete="off" required>
+      <button type="submit">Submit answer</button>
+      <p id="message" class="message" role="alert"></p>
+    </form>
+  </main>
+  <script>
+    const gameKey = "unlimitedGames.whoDidIt";
+    const game = JSON.parse(localStorage.getItem(gameKey) || "null");
+    const code = sessionStorage.getItem("unlimitedGames.playerCode");
+    if (!game || !code || game.code !== code) {
+      window.location.href = "index.html";
+    } else {
+      document.getElementById("game-code").textContent = game.code;
+      document.getElementById("question").textContent = game.question;
+      document.getElementById("answer-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const latestGame = JSON.parse(localStorage.getItem(gameKey));
+        latestGame.answers.push(document.getElementById("answer").value.trim());
+        localStorage.setItem(gameKey, JSON.stringify(latestGame));
+        window.location.href = "answers.html";
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Everyone's answers</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="card">
+    <p class="eyebrow">Game <span id="game-code"></span></p>
+    <h1 id="heading">Answer submitted!</h1>
+    <p id="status" class="muted">The host will reveal everyone's answers when ready.</p>
+    <h2 id="question"></h2>
+    <ul id="answers" class="answer-list"></ul>
+    <a class="secondary-link" href="index.html">Join another game</a>
+  </main>
+  <script>
+    const gameKey = "unlimitedGames.whoDidIt";
+    const game = JSON.parse(localStorage.getItem(gameKey) || "null");
+    const playerCode = sessionStorage.getItem("unlimitedGames.playerCode");
+    if (!game || playerCode !== game.code) {
+      window.location.href = "index.html";
+    } else {
+      document.getElementById("game-code").textContent = game.code;
+      document.getElementById("question").textContent = game.question;
+      function renderAnswers() {
+        const latestGame = JSON.parse(localStorage.getItem(gameKey) || "null");
+        if (!latestGame || latestGame.code !== playerCode) {
+          window.location.href = "index.html";
+          return;
+        }
+        const answers = document.getElementById("answers");
+        if (latestGame.revealed) {
+        document.getElementById("heading").textContent = "Everyone's answers";
+        document.getElementById("status").textContent = "The host has revealed the answers.";
+          answers.innerHTML = latestGame.answers.map((answer) => `<li>${escapeHtml(answer)}</li>`).join("");
+        } else {
+          answers.innerHTML = "<li class=\"muted\">Answers are hidden for now.</li>";
+        }
+      }
+      renderAnswers();
+      window.addEventListener("storage", renderAnswers);
+    }
+    function escapeHtml(value) {
+      return value.replace(/[&<>"']/g, (character) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+      }[character]));
+    }
+  </script>
+</body>
+</html>

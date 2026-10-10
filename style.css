@@ -1,0 +1,36 @@
+* { box-sizing: border-box; }
+body {
+  display: flex; align-items: center; justify-content: center; min-height: 100vh;
+  margin: 0; padding: 20px; color: #172033; background: #eef2ff;
+  font: 16px/1.5 system-ui, sans-serif;
+}
+.card {
+  width: min(100%, 520px); padding: 32px; background: #fff; border-radius: 16px;
+  box-shadow: 0 12px 40px #33415522;
+}
+.admin-card { width: min(100%, 680px); }
+h1, h2 { line-height: 1.2; }
+h1 { margin: 0 0 8px; }
+h2 { margin-top: 28px; }
+.eyebrow { margin: 0 0 8px; color: #4f46e5; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; font-size: .8rem; }
+.muted { color: #64748b; }
+label { display: block; margin-top: 24px; font-weight: 600; }
+input, textarea {
+  display: block; width: 100%; margin: 8px 0 16px; padding: 12px;
+  border: 1px solid #cbd5e1; border-radius: 8px; font: inherit;
+}
+button {
+  width: 100%; padding: 12px; border: 0; border-radius: 8px; color: #fff;
+  background: #4f46e5; font: inherit; font-weight: 700; cursor: pointer;
+}
+button:disabled { cursor: not-allowed; opacity: .45; }
+.secondary-link { display: block; margin-top: 24px; color: #4f46e5; text-align: center; }
+.message { min-height: 24px; color: #b42318; }
+.code-box { margin-top: 24px; padding: 16px; background: #eef2ff; border-radius: 8px; }
+.code-box strong { float: right; color: #4f46e5; letter-spacing: .14em; }
+.answer-list { padding: 0; list-style: none; }
+.answer-list li { margin: 8px 0; padding: 12px; background: #f8fafc; border-radius: 8px; }
+.button-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.button-row .outline { color: #4f46e5; background: #eef2ff; }
+.button-row .danger { background: #b42318; }
+.hidden { display: none; }

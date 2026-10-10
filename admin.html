@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin panel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="card admin-card">
+    <p class="eyebrow">Host controls</p>
+    <h1>Create a game</h1>
+    <form id="game-form">
+      <label for="question">Question</label>
+      <textarea id="question" rows="3" maxlength="240" placeholder="Who ate the last slice of pizza?" required></textarea>
+      <button type="submit">Create game</button>
+      <p id="message" class="message" role="status"></p>
+    </form>
+    <section id="controls" class="hidden">
+      <div class="code-box">Game code <strong id="code"></strong></div>
+      <p class="muted">Share this code with the players.</p>
+      <h2>Answers <span id="answer-count"></span></h2>
+      <ul id="answers" class="answer-list"></ul>
+      <div class="button-row">
+        <button id="reveal" type="button">Reveal answers</button>
+        <button id="hide" class="outline" type="button">Hide answers</button>
+        <button id="delete" class="danger" type="button">Delete game</button>
+      </div>
+    </section>
+    <a class="secondary-link" href="index.html">Player sign in</a>
+  </main>
+  <script>
+    const gameKey = "unlimitedGames.whoDidIt";
+    const form = document.getElementById("game-form");
+    const controls = document.getElementById("controls");
+    const codeElement = document.getElementById("code");
+    const answersElement = document.getElementById("answers");
+    const countElement = document.getElementById("answer-count");
+    const message = document.getElementById("message");
+    const makeCode = () => Math.random().toString(36).slice(2, 8).toUpperCase();
+
+    function render() {
+      const game = JSON.parse(localStorage.getItem(gameKey) || "null");
+      if (!game) {
+        controls.classList.add("hidden");
+        return;
+      }
+      controls.classList.remove("hidden");
+      document.getElementById("question").value = game.question;
+      codeElement.textContent = game.code;
+      countElement.textContent = `(${game.answers.length})`;
+      answersElement.innerHTML = game.answers.length
+        ? game.answers.map((answer) => `<li>${escapeHtml(answer)}</li>`).join("")
+        : "<li class=\"muted\">Waiting for answers…</li>";
+      document.getElementById("reveal").disabled = game.revealed;
+      document.getElementById("hide").disabled = !game.revealed;
+    }
+    function escapeHtml(value) {
+      return value.replace(/[&<>"']/g, (character) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+      }[character]));
+    }
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      localStorage.setItem(gameKey, JSON.stringify({
+        code: makeCode(), question: document.getElementById("question").value.trim(),
+        answers: [], revealed: false
+      }));
+      message.textContent = "Game created.";
+      render();
+    });
+    document.getElementById("reveal").addEventListener("click", () => {
+      const game = JSON.parse(localStorage.getItem(gameKey));
+      game.revealed = true;
+      localStorage.setItem(gameKey, JSON.stringify(game));
+      render();
+    });
+    document.getElementById("hide").addEventListener("click", () => {
+      const game = JSON.parse(localStorage.getItem(gameKey));
+      game.revealed = false;
+      localStorage.setItem(gameKey, JSON.stringify(game));
+      render();
+    });
+    document.getElementById("delete").addEventListener("click", () => {
+      localStorage.removeItem(gameKey);
+      message.textContent = "Game deleted.";
+      render();
+    });
+    window.addEventListener("storage", render);
+    render();
+  </script>
+</body>
+</html>

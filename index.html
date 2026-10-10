@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Who Did It?</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="card">
+    <p class="eyebrow">Unlimited Games</p>
+    <h1>Who Did It?</h1>
+    <p class="muted">Enter the game code from your host to join.</p>
+    <form id="join-form">
+      <label for="code">Game code</label>
+      <input id="code" name="code" maxlength="8" autocomplete="off" required>
+      <button type="submit">Join game</button>
+      <p id="message" class="message" role="alert"></p>
+    </form>
+    <a class="secondary-link" href="admin.html">Admin panel</a>
+  </main>
+  <script>
+    const gameKey = "unlimitedGames.whoDidIt";
+    document.getElementById("join-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const game = JSON.parse(localStorage.getItem(gameKey) || "null");
+      const code = document.getElementById("code").value.trim().toUpperCase();
+      if (!game || game.code !== code) {
+        document.getElementById("message").textContent = "That game code is not active.";
+        return;
+      }
+      sessionStorage.setItem("unlimitedGames.playerCode", code);
+      window.location.href = "whodidit.html";
+    });
+  </script>
+</body>
+</html>
